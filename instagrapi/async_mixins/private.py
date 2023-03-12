@@ -40,7 +40,7 @@ class AsyncPrivateRequestMixin(PrivateRequestMixin):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.private = httpx.AsyncClient(verify=False)
+        self.private = httpx.AsyncClient(verify=False, timeout=180)
 
 
     @property
