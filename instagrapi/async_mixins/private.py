@@ -6,7 +6,7 @@ from json.decoder import JSONDecodeError
 
 import requests
 
-from instagrapi import config, Client
+from instagrapi import config
 from instagrapi.exceptions import (
     BadPassword,
     ChallengeRequired,
@@ -44,7 +44,7 @@ class AsyncPrivateRequestMixin(PrivateRequestMixin):
 
     @property
     def base_headers(self):
-        headers = super().base_headers()
+        headers = super().base_headers
         for k, v in list(headers.items()):
             if v is None:
                 del headers[k]
@@ -198,7 +198,7 @@ class AsyncPrivateRequestMixin(PrivateRequestMixin):
 
 
     async def private_request(
-            self: "Client",
+            self,
             endpoint,
             data=None,
             params=None,

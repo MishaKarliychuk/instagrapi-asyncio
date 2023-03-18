@@ -4,3 +4,7 @@ from .public import AsyncPublicRequestMixin
 from .password import AsyncPasswordMixin
 from .user import AsyncUserMixin
 from .photo import AsyncUploadPhotoMixin
+from .media import AsyncMediaMixin
+from .hashtag import AsyncHashtagMixin
+from .location import AsyncLocationMixin
+from .account import AsyncAccountMixin

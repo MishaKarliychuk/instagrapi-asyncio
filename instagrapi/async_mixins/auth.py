@@ -16,7 +16,7 @@ import requests
 from httpx import Cookies
 from pydantic import ValidationError
 
-from instagrapi import config, Client
+from instagrapi import config
 from instagrapi.exceptions import (
     ClientThrottledError,
     PleaseWaitFewMinutes,

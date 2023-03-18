@@ -5,12 +5,11 @@ import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 # Async mixins
-from instagrapi.async_mixins.auth import AsyncLoginMixin
-from instagrapi.async_mixins.password import AsyncPasswordMixin
-from instagrapi.async_mixins.photo import AsyncUploadPhotoMixin
-from instagrapi.async_mixins.private import AsyncPrivateRequestMixin
-from instagrapi.async_mixins.public import AsyncPublicRequestMixin
-from instagrapi.async_mixins.user import AsyncUserMixin
+from instagrapi.async_mixins import AsyncHashtagMixin, AsyncLoginMixin, AsyncPasswordMixin, AsyncUploadPhotoMixin, \
+    AsyncPrivateRequestMixin, AsyncAccountMixin, \
+    AsyncPublicRequestMixin, AsyncUserMixin, AsyncMediaMixin, AsyncLocationMixin
+
+# Sync Mixins
 from instagrapi.mixins.account import AccountMixin
 from instagrapi.mixins.album import DownloadAlbumMixin, UploadAlbumMixin
 from instagrapi.mixins.auth import LoginMixin
@@ -135,11 +134,21 @@ class Client(
         return False
 
 
-class AsyncClient(AsyncPrivateRequestMixin,
+class AsyncClient(Client,
+                  AsyncPrivateRequestMixin,
                   AsyncLoginMixin,
                   AsyncPublicRequestMixin,
                   AsyncUserMixin,
                   AsyncPasswordMixin,
                   AsyncUploadPhotoMixin,
-                  Client):
-    pass
+                  AsyncMediaMixin,
+                  AsyncHashtagMixin,
+                  AsyncLocationMixin,
+                  AsyncAccountMixin
+                  ):
+
+    def __init__(self, username, password, *args, sessionid: str = None, **kwargs):
+        super(AsyncClient, self).__init__(*args, **kwargs)
+        self.session_id = sessionid
+        self.username = username
+        self.password = password
