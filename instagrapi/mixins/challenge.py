@@ -411,6 +411,7 @@ class ChallengeResolveMixin:
             assert self.last_json.get("status", "") == "ok"
             return True
         elif step_name == "":
+            print(self.last_json)
             assert self.last_json.get("action", "") == "close"
             assert self.last_json.get("status", "") == "ok"
             return True

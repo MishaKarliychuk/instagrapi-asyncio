@@ -423,3 +423,15 @@ class AsyncLoginMixin(AsyncPreLoginFlowMixin, AsyncPostLoginFlowMixin, LoginMixi
     def cookie_dict(self) -> dict:
         self.private.cookies: Cookies
         return dict(self.private.cookies.items())
+
+    async def expose(self) -> Dict:
+        """
+        Helper to expose
+
+        Returns
+        -------
+        Dict
+            A dictionary of response from the call
+        """
+        data = {"id": self.uuid, "experiment": "ig_android_profile_contextual_feed"}
+        return await self.private_request("qe/expose/", self.with_default_data(data))

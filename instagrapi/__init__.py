@@ -4,6 +4,13 @@ from urllib.parse import urlparse
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
+# Async mixins
+from instagrapi.async_mixins.auth import AsyncLoginMixin
+from instagrapi.async_mixins.password import AsyncPasswordMixin
+from instagrapi.async_mixins.photo import AsyncUploadPhotoMixin
+from instagrapi.async_mixins.private import AsyncPrivateRequestMixin
+from instagrapi.async_mixins.public import AsyncPublicRequestMixin
+from instagrapi.async_mixins.user import AsyncUserMixin
 from instagrapi.mixins.account import AccountMixin
 from instagrapi.mixins.album import DownloadAlbumMixin, UploadAlbumMixin
 from instagrapi.mixins.auth import LoginMixin
@@ -13,6 +20,7 @@ from instagrapi.mixins.clip import DownloadClipMixin, UploadClipMixin
 from instagrapi.mixins.collection import CollectionMixin
 from instagrapi.mixins.comment import CommentMixin
 from instagrapi.mixins.direct import DirectMixin
+from instagrapi.mixins.explore import ExploreMixin
 from instagrapi.mixins.fbsearch import FbSearchMixin
 from instagrapi.mixins.fundraiser import FundraiserMixin
 from instagrapi.mixins.hashtag import HashtagMixin
@@ -21,7 +29,6 @@ from instagrapi.mixins.igtv import DownloadIGTVMixin, UploadIGTVMixin
 from instagrapi.mixins.insights import InsightsMixin
 from instagrapi.mixins.location import LocationMixin
 from instagrapi.mixins.media import MediaMixin
-from instagrapi.mixins.explore import ExploreMixin
 from instagrapi.mixins.multiple_accounts import MultipleAccountsMixin
 from instagrapi.mixins.note import NoteMixin
 from instagrapi.mixins.notification import NotificationMixin
@@ -126,3 +133,13 @@ class Client(
             return True
         self.public.proxies = self.private.proxies = {}
         return False
+
+
+class AsyncClient(AsyncPrivateRequestMixin,
+                  AsyncLoginMixin,
+                  AsyncPublicRequestMixin,
+                  AsyncUserMixin,
+                  AsyncPasswordMixin,
+                  AsyncUploadPhotoMixin,
+                  Client):
+    pass
