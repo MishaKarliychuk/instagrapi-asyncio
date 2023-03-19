@@ -32,7 +32,7 @@ class AsyncMediaMixin(MediaMixin):
     """
 
 
-    async def media_id(self, media_pk: str) -> str:
+    async def media_id(self, media_pk: str, author_id: str = None) -> str:
         """
         Get full media id
 
@@ -55,8 +55,10 @@ class AsyncMediaMixin(MediaMixin):
             assert media_id.isdigit(), (
                 "media_id must been contain digits, now %s" % media_id
             )
-            user = await self.media_user(media_id)
-            media_id = "%s_%s" % (media_id, user.pk)
+            if not author_id:
+                user = await self.media_user(media_id)
+                author_id = user.pk
+            media_id = "%s_%s" % (media_id, author_id)
         return media_id
 
 
@@ -236,7 +238,7 @@ class AsyncMediaMixin(MediaMixin):
             A dictionary of response from the call
         """
         assert self.user_id, "Login required"
-        media_id = self.media_id(media_id)
+        media_id = await self.media_id(media_id)
         media = await self.media_info(media_id)  # from cache
         usertags = [
             {"user_id": tag.user.pk, "position": [tag.x, tag.y]} for tag in usertags
@@ -811,10 +813,10 @@ class AsyncMediaMixin(MediaMixin):
             A boolean value
         """
 
-        def gen(media_ids):
+        async def gen(media_ids):
             result = {}
             for media_id in media_ids:
-                media_pk, user_id = self.media_id(media_id).split("_")
+                media_pk, user_id = await self.media_id(media_id).split("_")
                 end = int(datetime.now().timestamp())
                 begin = end - random.randint(100, 3000)
                 result[f"{media_pk}_{user_id}_{user_id}"] = [f"{begin}_{end}"]
@@ -825,16 +827,16 @@ class AsyncMediaMixin(MediaMixin):
             "live_vods_skipped": {},
             "nuxes_skipped": {},
             "nuxes": {},
-            "reels": gen(media_ids),
+            "reels": await gen(media_ids),
             "live_vods": {},
-            "reel_media_skipped": gen(skipped_media_ids),
+            "reel_media_skipped": await gen(skipped_media_ids),
         }
         result = await self.private_request(
             "/v2/media/seen/?reel=1&live_vod=0", self.with_default_data(data)
         )
         return result["status"] == "ok"
 
-    async def media_likers(self, media_id: str) -> List[UserShort]:
+    async def media_likers(self, media_id: str, author_id: str = None) -> List[UserShort]:
         """
         Get user's likers
 
@@ -847,7 +849,7 @@ class AsyncMediaMixin(MediaMixin):
         List[UserShort]
             List of objects of User type
         """
-        media_id = self.media_id(media_id)
+        media_id = await self.media_id(media_id, author_id)
         result = await self.private_request(f"media/{media_id}/likers/")
         return [extract_user_short(u) for u in result["users"]]
 
@@ -867,7 +869,7 @@ class AsyncMediaMixin(MediaMixin):
         bool
             A boolean value
         """
-        media_id = self.media_id(media_id)
+        media_id = await self.media_id(media_id)
         name = "undo_only_me" if revert else "only_me"
         result = await self.private_request(
             f"media/{media_id}/{name}/", self.with_action_data({"media_id": media_id})

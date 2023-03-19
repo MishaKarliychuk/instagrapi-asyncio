@@ -6,7 +6,7 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 # Async mixins
 from instagrapi.async_mixins import AsyncHashtagMixin, AsyncLoginMixin, AsyncPasswordMixin, AsyncUploadPhotoMixin, \
-    AsyncPrivateRequestMixin, AsyncAccountMixin, \
+    AsyncPrivateRequestMixin, AsyncAccountMixin, AsyncCommentMixin, \
     AsyncPublicRequestMixin, AsyncUserMixin, AsyncMediaMixin, AsyncLocationMixin
 
 # Sync Mixins
@@ -144,7 +144,8 @@ class AsyncClient(Client,
                   AsyncMediaMixin,
                   AsyncHashtagMixin,
                   AsyncLocationMixin,
-                  AsyncAccountMixin
+                  AsyncAccountMixin,
+                  AsyncCommentMixin
                   ):
 
     def __init__(self, username, password, *args, sessionid: str = None, **kwargs):
