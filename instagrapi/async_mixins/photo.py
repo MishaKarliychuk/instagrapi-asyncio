@@ -210,7 +210,7 @@ class AsyncUploadPhotoMixin(UploadPhotoMixin):
             "scene_capture_type": "standard",
             "software": config.SOFTWARE.format(**self.device_settings),
             "multi_sharing": "1",
-            "location": self.location_build(location),
+            "location": await self.location_build(location),
             "media_folder": "Camera",
             "source_type": "4",
             "caption": caption,

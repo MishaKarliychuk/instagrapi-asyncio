@@ -81,7 +81,7 @@ class AsyncAccountMixin(AccountMixin):
             "accounts/account_security_info/", self.with_default_data({})
         )
 
-    async def account_edit(self, **data: Dict) -> Account:
+    async def account_edit(self, **data) -> Account:
         """
         Edit your profile (authorized account)
 
@@ -112,10 +112,12 @@ class AsyncAccountMixin(AccountMixin):
         data = {key: val for key, val in data.items() if key in fields}
         if "email" not in data or "phone_number" not in data:
             # Instagram Error: You need an email or confirmed phone number.
-            user_data = self.account_info().dict()
+            user_data = (await self.account_info()).dict()
             user_data = {field: user_data[field] for field in fields}
             data = dict(user_data, **data)
         full_name = data.pop("full_name", None)
+        print(data)
+
         if full_name:
             # Instagram original field-name for full user name is "first_name"
             data["first_name"] = full_name
@@ -125,7 +127,7 @@ class AsyncAccountMixin(AccountMixin):
         )
         biography = data.get("biography")
         if biography:
-            self.account_set_biography(biography)
+            await self.account_set_biography(biography)
         return extract_account(result["user"])
 
     async def account_set_biography(self, biography: str) -> bool:
